@@ -1,0 +1,25 @@
+<launch>
+
+  <arg name="namespace" default="$(env UAV_NAMESPACE)"/>
+  <arg name="odometry" default="mavros/global_position/local"/>
+
+  <arg name ="rate" default = "30"/>
+  <arg name="global_frame_id" default="/world"/>
+  <arg name="robot_frame_id" default="/$(arg namespace)/base_link"/>
+
+  <arg name="mpc_tracker_pose" default="tracker/input_pose"/>
+  <!-- arg name="mpc_tracker_trajectory" default="tracker/input_trajectory"/ -->
+
+<group ns="$(arg namespace)">
+  <node name="landing_platform_node" pkg="landing_platform" type="landing_platform_node" output="screen">
+    <param name ="rate" value = "$(arg rate)"/>
+    <param name="global_frame_id" value="$(arg global_frame_id)"/>
+    <param name="robot_frame_id" value="$(arg robot_frame_id)"/>
+    
+    <remap from ="odometry" to = "$(arg odometry)"/>
+
+    <remap from="mpc_tracker/pose" to="$(arg mpc_tracker_pose)"/>
+    <!-- remap from="mpc_tracker/trajectory" to="$(arg mpc_tracker_trajectory)"/ -->
+  </node>
+</group>
+</launch>

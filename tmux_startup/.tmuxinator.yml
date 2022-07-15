@@ -1,0 +1,61 @@
+name: ar_tag_detection
+root: ./
+startup_window: roscore
+pre_window: export UAV_NAMESPACE=red
+windows:
+  - roscore:
+      layout: tiled
+      panes:
+        - roscore
+        - export SITL_RITW_TERMINAL="tmux new-window -n:ardupilot1"; waitForRos; 
+          roslaunch ardupilot_gazebo sim_vehicle.launch 
+          enable_console:=false
+          additional_arguments:="--no-rebuild"
+        - waitForRos; waitForSimulation; roslaunch ardupilot_gazebo mavros.launch
+  - gazebo:
+      layout: tiled
+      panes:
+        - waitForRos; roslaunch landing_platform environment.launch
+        - waitForRos; waitForSimulation; roslaunch larics_gazebo_worlds landing_platform.launch
+  - arm&takeof:
+      layout: tiled
+      panes:
+        # - waitForRos; roslaunch uav_ros_control pid_carrot.launch manual_takeoff:=false
+        # - rosrun ardupilot_gazebo automatic_takeoff.sh
+        - waitForRos; roslaunch uav_ros_control pid_carrot.launch 
+          manual_takeoff:=false
+          control_type:=pid_cascade_node_yawrate
+          # default_params:=custom_config/position_control_thrust.yaml
+        - |
+          waitForRos
+          rosrun ardupilot_gazebo automatic_takeoff.sh
+  - mpc_tracker:
+      layout: tiled
+      panes:
+        - waitForRos; waitForOdometry; roslaunch uav_ros_tracker mpc_tracker.launch tracker_config:=custom_config/mpc_tracker_config.yaml
+  - tf:
+      layout: tiled
+      panes: 
+        - waitForRos; waitForOdometry; roslaunch potential_fields world_to_base_link.launch        
+  - ar_tag_detection:
+      layout: tiled
+      panes:
+        # - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/red/camera/color/image_raw cam_info_topic:=/red/camera/color/camera_info output_frame:=red/base_link marker_size:=100.0
+        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/red/camera/color/image_raw cam_info_topic:=/red/camera/color/camera_info output_frame:=world marker_size:=100.0
+        - waitForRos; rostopic echo /outer_tag/ar_pose_marker 
+        # - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/red/camera/color/image_raw cam_info_topic:=/red/camera/color/camera_info output_frame:=red/base_link marker_size:=8.33
+        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/red/camera/color/image_raw cam_info_topic:=/red/camera/color/camera_info output_frame:=world marker_size:=8.33
+        - waitForRos; rostopic echo /inner_tag/ar_pose_marker
+  - landing_algorithm:
+      layout: tiled
+      panes: 
+        # - waitForRos; waitForOdometry; roslaunch potential_fields trajectory_go_to.launch
+        - waitForRos; waitForOdometry; roslaunch landing_platform landing_platform.launch
+        - "#waitForRos; waitForOdometry; rosservice call /$UAV_NAMESPACE/landing_platform/toggle \"data: true\""
+        # - "#waitForRos; waitForOdometry; rostopic pub /$UAV_NAMESPACE/go_to/reference geometry_msgs/Pose '{position: {x: 0.0, y: 0.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}'"
+  # - rviz:
+  #     layout: tiled
+  #     panes:
+  #       - waitForRos; rosrun rviz rviz -d $(rospack find landing_platform)/rviz/detection.rviz
+
+        

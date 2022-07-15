@@ -1,0 +1,25 @@
+name: ar_tag_detection
+root: ./
+startup_window: roscore
+windows:
+  - roscore:
+      layout: tiled
+      panes:
+        - roscore
+  - realsense_camera:
+      layout: tiled
+      panes:
+        - waitForRos; roslaunch realsense2_camera rs_camera.launch
+  - ar_tag_detection:
+      layout: tiled
+      panes:
+        - waitForRos; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=camera_color_frame marker_size:=18.0
+        - waitForRos; rostopic echo /outer_tag/ar_pose_marker 
+        - waitForRos; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=camera_color_frame marker_size:=1.5
+        - waitForRos; rostopic echo /inner_tag/ar_pose_marker
+  - rviz:
+      layout: tiled
+      panes:
+        - waitForRos; rosrun rviz rviz -d $(rospack find landing_platform)/rviz/detection.rviz
+
+        

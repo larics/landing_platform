@@ -1,0 +1,8 @@
+bebop_gazebo/config/mathematical_model.pdf
+bebop_gazebo/launch/task*
+potential_fields/bags*
+.cproject
+.project
+.settings
+*.pyc
+.vscode

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="verbose" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="kopterworx_x" default="0.0"/>
+  <arg name="kopterworx_y" default="0.0"/>
+  <arg name="enable_velodyne" default="false"/>
+  <arg name="world_name" value="worlds/empty.world"/>
+  <param name="/use_sim_time" value="$(arg use_sim_time)"/>
+
+  <include file="$(find ardupilot_gazebo)/launch/kopterworx.launch">
+    <arg name="x" value="$(arg kopterworx_x)"/>
+    <arg name="y" value="$(arg kopterworx_y)"/>
+    <arg name="enable_velodyne" value="$(arg enable_velodyne)"/>
+    <arg name="world" value="$(arg world_name)"/>
+  </include>
+</launch>
