@@ -16,6 +16,7 @@ LandingPlatform::LandingPlatform()
 
     //ROS Publishers
     _trackerPosePub = nh.advertise<geometry_msgs::PoseStamped>("mpc_tracker/pose", 1);
+    _detectedTagsPub = nh.advertise<landing_platform::DetectedTags>("detected_tags", 1); 
 
     //ROS Services
 	_serviceLanding = nh.advertiseService("landing_platform/toggle",
@@ -157,6 +158,8 @@ void LandingPlatform::doLanding()
         }
     }
 
+    publishDetectedTags();
+
 }
 
 void LandingPlatform::initializeParameters(ros::NodeHandle& nh)
@@ -226,4 +229,28 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
 		_trackerPosePub.publish(pose);
     }
     ROS_INFO("Pose sent to MPC Tracker");
+}
+
+void LandingPlatform::publishDetectedTags()
+{
+    landing_platform::DetectedTags msgDetectedTags;
+    msgDetectedTags.outer_tag_id = _outerTagId;
+    msgDetectedTags.outer_tag_valid_detections = _outerTagDetectionCounter;
+    msgDetectedTags.outer_tag_position.x = _outerTagPositionX;
+    msgDetectedTags.outer_tag_position.y = _outerTagPositionY;
+    msgDetectedTags.outer_tag_position.z = _outerTagPositionZ;
+    msgDetectedTags.outer_tag_orinentation.x = _outerTagOrientationX;
+    msgDetectedTags.outer_tag_orinentation.y = _outerTagOrientationY;
+    msgDetectedTags.outer_tag_orinentation.z = _outerTagOrientationZ;
+    msgDetectedTags.outer_tag_orinentation.w = _outerTagOrientationW;
+    msgDetectedTags.inner_tag_id = _innerTagId;
+    msgDetectedTags.inner_tag_valid_detections = _innerTagDetectionCounter;
+    msgDetectedTags.inner_tag_position.x = _innerTagPositionX;
+    msgDetectedTags.inner_tag_position.y = _innerTagPositionY;
+    msgDetectedTags.inner_tag_position.z = _innerTagPositionZ;
+    msgDetectedTags.inner_tag_orinentation.x = _innerTagOrientationX;
+    msgDetectedTags.inner_tag_orinentation.y = _innerTagOrientationY;
+    msgDetectedTags.inner_tag_orinentation.z = _innerTagOrientationZ;
+    msgDetectedTags.inner_tag_orinentation.w = _innerTagOrientationW;
+    _detectedTagsPub.publish(msgDetectedTags);
 }

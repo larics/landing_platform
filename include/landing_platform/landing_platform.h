@@ -28,11 +28,14 @@
 
 #include <ar_track_alvar_msgs/AlvarMarkers.h>
 
+#include <landing_platform/DetectedTags.h>
+
 #include <tf2/convert.h>
 #include <tf/transform_broadcaster.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Transform.h>
+
 
 using namespace std;
 
@@ -48,6 +51,8 @@ class LandingPlatform
         virtual void initializeParameters(ros::NodeHandle& nh);
 
         void sendMpcTrackerPose(int tagId);
+
+        void publishDetectedTags();
 
 		bool toggleLandingServiceCb(std_srvs::SetBool::Request& request, 
 			std_srvs::SetBool::Response& response)
@@ -86,7 +91,7 @@ class LandingPlatform
         bool _startFlag;
 
         ros::Subscriber _odometrySub, _outerTagSub, _innerTagSub;
-        ros::Publisher _trackerPosePub;
+        ros::Publisher _trackerPosePub, _detectedTagsPub;
 
         int _outerTagId;
         int _innerTagId;

@@ -53,9 +53,9 @@ windows:
         - waitForRos; waitForOdometry; roslaunch landing_platform landing_platform.launch
         - "#waitForRos; waitForOdometry; rosservice call /$UAV_NAMESPACE/landing_platform/toggle \"data: true\""
         # - "#waitForRos; waitForOdometry; rostopic pub /$UAV_NAMESPACE/go_to/reference geometry_msgs/Pose '{position: {x: 0.0, y: 0.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}'"
-  # - rviz:
-  #     layout: tiled
-  #     panes:
-  #       - waitForRos; rosrun rviz rviz -d $(rospack find landing_platform)/rviz/detection.rviz
+  - rviz:
+      layout: tiled
+      panes:
+        - waitForRos; rosrun rviz rviz -d $(rospack find landing_platform)/rviz/detection_sim.rviz
 
         

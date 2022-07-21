@@ -1,0 +1,8 @@
+uint32 outer_tag_id
+uint32 outer_tag_valid_detections
+geometry_msgs/Point outer_tag_position
+geometry_msgs/Quaternion outer_tag_orinentation
+uint32 inner_tag_id
+uint32 inner_tag_valid_detections
+geometry_msgs/Point inner_tag_position
+geometry_msgs/Quaternion inner_tag_orinentation
