@@ -1,0 +1,52 @@
+name: ar_tag_detection
+root: ./
+startup_window: roscore
+pre_window: export UAV_NAMESPACE=red
+windows:
+  - roscore:
+      layout: tiled
+      panes:
+        - roscore
+        - waitForRos; roslaunch erl_drone apm2.launch
+        - waitForRos; waitForMavros; rosrun erl_drone mavsys_script.sh
+        - waitForRos; roslaunch multirotor_transformations rc_to_joy.launch config_file:=$RC_CONFIG
+  - control:
+      layout: tiled
+      panes:
+        - waitForRos; waitForGlobal; roslaunch uav_ros_control pid_carrot.launch manual_takeoff:=true
+  - mpc_tracker:
+      layout: tiled
+      panes:
+        - waitForRos; waitForOdometry; roslaunch uav_ros_tracker mpc_tracker.launch tracker_config:=custom_config/mpc_tracker_config.yaml
+  - tf:
+      layout: tiled
+      panes: 
+        - waitForRos; waitForOdometry; roslaunch landing_platform world_to_base_link.launch
+  - realsense_camera:
+      layout: tiled
+      panes:
+        - waitForRos; roslaunch realsense2_camera rs_camera.launch        
+  - ar_tag_detection:
+      layout: tiled
+      panes:
+        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=world marker_size:=100.0
+        - waitForRos; rostopic echo /outer_tag/ar_pose_marker 
+        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=world marker_size:=8.33
+        - waitForRos; rostopic echo /inner_tag/ar_pose_marker
+  - landing_algorithm:
+      layout: tiled
+      panes: 
+        # - waitForRos; waitForOdometry; roslaunch potential_fields trajectory_go_to.launch
+        - waitForRos; waitForOdometry; roslaunch landing_platform landing_platform.launch
+        - "#waitForRos; waitForOdometry; rosservice call /$UAV_NAMESPACE/landing_platform/toggle \"data: true\""
+        # - "#waitForRos; waitForOdometry; rostopic pub /$UAV_NAMESPACE/go_to/reference geometry_msgs/Pose '{position: {x: 0.0, y: 0.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}'"
+  - rviz:
+      layout: tiled
+      panes:
+        - waitForRos; rosrun rviz rviz -d $(rospack find landing_platform)/rviz/detection_sim.rviz
+ - bagger:
+      layout: tiled
+      panes:
+        - history -s "roslaunch landing_platform landing_platform_bagger_mpc_tracker.launch
+
+        

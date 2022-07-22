@@ -1,0 +1,73 @@
+<launch>
+  <arg name="filename" default="experiment"/>
+
+  <node name="landing_platform_bagger" pkg="landing_platform" type="bagger.sh" output="screen"
+    args="$(find landing_platform)/bags/$(arg filename) /tf /tf_static 
+          /$(env UAV_NAMESPACE)/mavros/battery                                                                                                                                                                                                                                                                                                               
+          /$(env UAV_NAMESPACE)/mavros/global_position/compass_hdg                                                                                                                                                                            
+          /$(env UAV_NAMESPACE)/mavros/global_position/global                                                                                                                                                                                 
+          /$(env UAV_NAMESPACE)/mavros/global_position/gp_lp_offset                                                                                                                                                                           
+          /$(env UAV_NAMESPACE)/mavros/global_position/gp_origin                                                                                                                                                                              
+          /$(env UAV_NAMESPACE)/mavros/global_position/home                                                                                                                                                                                   
+          /$(env UAV_NAMESPACE)/mavros/global_position/local                                                                                                                                                                                  
+          /$(env UAV_NAMESPACE)/mavros/global_position/raw/fix                                                                                                                                                                                
+          /$(env UAV_NAMESPACE)/mavros/global_position/raw/gps_vel                                                                                                                                                                            
+          /$(env UAV_NAMESPACE)/mavros/global_position/raw/satellites
+          /$(env UAV_NAMESPACE)/mavros/global_position/rel_alt
+          /$(env UAV_NAMESPACE)/mavros/global_position/set_gp_origin
+          /$(env UAV_NAMESPACE)/mavros/home_position/home
+          /$(env UAV_NAMESPACE)/mavros/home_position/set
+          /$(env UAV_NAMESPACE)/mavros/imu/data                                
+          /$(env UAV_NAMESPACE)/mavros/imu/data_raw                            
+          /$(env UAV_NAMESPACE)/mavros/imu/diff_pressure
+          /$(env UAV_NAMESPACE)/mavros/imu/mag                                 
+          /$(env UAV_NAMESPACE)/mavros/imu/static_pressure
+          /$(env UAV_NAMESPACE)/mavros/imu/temperature_baro
+          /$(env UAV_NAMESPACE)/mavros/imu/temperature_imu
+          /$(env UAV_NAMESPACE)/mavros/local_position/accel
+          /$(env UAV_NAMESPACE)/mavros/local_position/odom
+          /$(env UAV_NAMESPACE)/mavros/local_position/pose
+          /$(env UAV_NAMESPACE)/mavros/local_position/pose_cov
+          /$(env UAV_NAMESPACE)/mavros/local_position/velocity_body
+          /$(env UAV_NAMESPACE)/mavros/local_position/velocity_body_cov
+          /$(env UAV_NAMESPACE)/mavros/local_position/velocity_local
+          /$(env UAV_NAMESPACE)/mavros/manual_control/control
+          /$(env UAV_NAMESPACE)/mavros/manual_control/send
+          /$(env UAV_NAMESPACE)/mavros/mission/reached
+          /$(env UAV_NAMESPACE)/mavros/mission/waypoints
+          /$(env UAV_NAMESPACE)/mavros/param/param_value
+          /$(env UAV_NAMESPACE)/mavros/radio_status                            
+          /$(env UAV_NAMESPACE)/mavros/rc/in                                   
+          /$(env UAV_NAMESPACE)/mavros/rc/out                                  
+          /$(env UAV_NAMESPACE)/mavros/rc/override                             
+          /$(env UAV_NAMESPACE)/mavros/setpoint_accel/accel
+          /$(env UAV_NAMESPACE)/mavros/setpoint_attitude/attitude
+          /$(env UAV_NAMESPACE)/mavros/setpoint_attitude/thrust
+          /$(env UAV_NAMESPACE)/mavros/setpoint_position/global
+          /$(env UAV_NAMESPACE)/mavros/setpoint_position/global_to_local
+          /$(env UAV_NAMESPACE)/mavros/setpoint_position/local
+          /$(env UAV_NAMESPACE)/mavros/setpoint_raw/attitude
+          /$(env UAV_NAMESPACE)/mavros/setpoint_raw/global
+          /$(env UAV_NAMESPACE)/mavros/setpoint_raw/local
+          /$(env UAV_NAMESPACE)/mavros/setpoint_raw/target_attitude
+          /$(env UAV_NAMESPACE)/mavros/setpoint_raw/target_global
+          /$(env UAV_NAMESPACE)/mavros/setpoint_raw/target_local
+          /$(env UAV_NAMESPACE)/mavros/setpoint_trajectory/desired
+          /$(env UAV_NAMESPACE)/mavros/setpoint_trajectory/local
+          /$(env UAV_NAMESPACE)/mavros/setpoint_velocity/cmd_vel
+          /$(env UAV_NAMESPACE)/mavros/setpoint_velocity/cmd_vel_unstamped
+          /$(env UAV_NAMESPACE)/mavros/state                                   
+          /$(env UAV_NAMESPACE)/mavros/statustext/recv
+          /$(env UAV_NAMESPACE)/mavros/statustext/send
+          /$(env UAV_NAMESPACE)/mavros/time_reference                          
+          /$(env UAV_NAMESPACE)/mavros/timesync_status
+          /$(env UAV_NAMESPACE)/mavros/vfr_hud                                 
+          /$(env UAV_NAMESPACE)/mavros/wind_estimation
+          /$(env UAV_NAMESPACE)/joint_trajectory
+          /$(env UAV_NAMESPACE)/carrot/pose /$(env UAV_NAMESPACE)/carrot/trajectory /$(env UAV_NAMESPACE)/carrot/status /$(env UAV_NAMESPACE)/position_hold/trajectory
+          /$(env UAV_NAMESPACE)/tracker/input_pose /$(env UAV_NAMESPACE)/tracker/status
+          /$(env UAV_NAMESPACE)/debug/processed_trajectory
+          /$(env UAV_NAMESPACE)/joy
+          /$(env UAV_NAMESPACE)/detected_tags
+          /diagnostics" />
+</launch>

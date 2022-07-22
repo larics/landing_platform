@@ -36,7 +36,7 @@ windows:
   - tf:
       layout: tiled
       panes: 
-        - waitForRos; waitForOdometry; roslaunch potential_fields world_to_base_link.launch        
+        - waitForRos; waitForOdometry; roslaunch landing_platform world_to_base_link.launch        
   - ar_tag_detection:
       layout: tiled
       panes:
@@ -49,7 +49,6 @@ windows:
   - landing_algorithm:
       layout: tiled
       panes: 
-        # - waitForRos; waitForOdometry; roslaunch potential_fields trajectory_go_to.launch
         - waitForRos; waitForOdometry; roslaunch landing_platform landing_platform.launch
         - "#waitForRos; waitForOdometry; rosservice call /$UAV_NAMESPACE/landing_platform/toggle \"data: true\""
         # - "#waitForRos; waitForOdometry; rostopic pub /$UAV_NAMESPACE/go_to/reference geometry_msgs/Pose '{position: {x: 0.0, y: 0.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}'"

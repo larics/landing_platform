@@ -170,9 +170,9 @@ void LandingPlatform::initializeParameters(ros::NodeHandle& nh)
     _outerTagDetectionCounter = 0;
     _innerTagDetectionCounter = 0;
 
-    _outerTagAltMax = 15.0;
+    _outerTagAltMax = 30.0;
     _outerTagAltMin = 2.0;
-    _innerTagAltMax = 3.0;
+    _innerTagAltMax = 5.0;
     _innerTagAltMin = 1.0;
 
     _outerTagDetectionCounter = 0;
