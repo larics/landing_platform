@@ -41,6 +41,8 @@ RUN apt-get update && \
         linuxptp && \
     pip install pypozyx
 
+RUN curl https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules >> /etc/udev/rules.d/99-realsense-libusb.rules
+
 ARG ROS_HOSTNAME=localhost.local
 ARG ROS_MASTER_URI=http://localhost.local:11311
 ARG ROS_IP=localhost.local
