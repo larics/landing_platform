@@ -41,6 +41,9 @@ export DOCKER_BUILDKIT=1
 docker build \
     $build_args \
     --build-arg DISTRO=$DISTRO \
+    --build-arg ROS_HOSTNAME=$ROS_HOSTNAME \
+    --build-arg ROS_MASTER_URI=$ROS_MASTER_URI \
+    --build-arg ROS_IP=$ROS_IP \
     -f $MY_PATH/$DOCKERFILE \
     --ssh default \
     -t landing_platform:focal $MY_PATH/..
