@@ -21,7 +21,7 @@ windows:
   - tf:
       layout: tiled
       panes: 
-        - waitForRos; waitForOdometry; roslaunch landing_platform tf_static_map_to_camera_link.launch        
+        - waitForRos; waitForOdometry; roslaunch landing_platform tf_static_base_link_to_camera_link.launch        
   - realsense_camera:
       layout: tiled
       panes:
