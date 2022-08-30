@@ -1,7 +1,7 @@
 ARG DISTRO=bionic
 FROM lmark1/uav_ros_stack:$DISTRO
 
-ARG ROS_DISTRO_ARG=melodic
+ARG ROS_DISTRO=melodic
 ARG CATKIN_WORKSPACE=uav_ws
 ARG DEBIAN_FRONTEND=nointeractive
 ARG HOME=/root
