@@ -13,5 +13,6 @@
     <arg name="y" value="$(arg kopterworx_y)"/>
     <arg name="enable_velodyne" value="$(arg enable_velodyne)"/>
     <arg name="world" value="$(arg world_name)"/>
+    <arg name="remap_gazebo_tf" value="true" />
   </include>
 </launch>

@@ -1,7 +1,7 @@
 ARG DISTRO=bionic
-FROM lmark1/uav_ros_stack:$DISTRO
+FROM lmark1/uav_ros_simulation:$DISTRO
 
-ARG ROS_DISTRO_ARG=melodic
+ARG ROS_DISTRO=melodic
 ARG CATKIN_WORKSPACE=uav_ws
 ARG DEBIAN_FRONTEND=nointeractive
 ARG HOME=/root
@@ -57,7 +57,9 @@ ARG ROS_MASTER_URI=http://localhost.local:11311
 ARG ROS_IP=localhost.local
 
 WORKDIR $HOME/$CATKIN_WORKSPACE/src
-RUN cd uav_ros_stack && gitman update
+RUN --mount=type=ssh git  clone git@github.com:larics/larics_gazebo_worlds.git &&
+    cd uav_ros_simulation && gitman update
+RUN catkin build
 
 WORKDIR $HOME/$CATKIN_WORKSPACE/src/landing_platform
 COPY . .

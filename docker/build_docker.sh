@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKERFILE=Dockerfile
+DOCKERFILE=Dockerfile.sim
 DISTRO=bionic
 build_args=""
 
@@ -46,4 +46,4 @@ docker build \
     --build-arg ROS_IP=$ROS_IP \
     -f $MY_PATH/$DOCKERFILE \
     --ssh default \
-    -t landing_platform:focal $MY_PATH/..
+    -t landing_platform:$DISTRO $MY_PATH/..

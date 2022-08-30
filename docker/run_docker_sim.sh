@@ -33,7 +33,6 @@ ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
 
 docker run \
   -it \
-  #--gpus $GPUS \
   --network host \
   --privileged \
   --volume /dev:/dev \
@@ -46,7 +45,7 @@ docker run \
   --env XAUTHORITY=${XAUTH} \
   --env DISPLAY=$DISPLAY \
   --env TERM=xterm-256color \
-  --env QT_X11_NO_MITSHM=1 \ 
+  --env QT_X11_NO_MITSHM=1 \
   --name $CONTAINER_NAME \
   $IMAGE_NAME \
   /bin/bash

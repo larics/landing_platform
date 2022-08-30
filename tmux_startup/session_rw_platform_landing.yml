@@ -7,9 +7,9 @@ windows:
       layout: tiled
       panes:
         - roscore
-        - waitForRos; roslaunch erl_drone apm2.launch
-        - waitForRos; waitForMavros; rosrun erl_drone mavsys_script.sh
-        - waitForRos; roslaunch multirotor_transformations rc_to_joy.launch config_file:=$RC_CONFIG
+        - waitForRos; roslaunch uav_ros_general apm2.launch fcu_url:=/dev/ttyUSB_px4:921600
+        - waitForRos; waitForMavros; sleep 10; roslaunch uav_ros_general mavsys.launch raw_sensors:=50 rc_channels:=50 extra1:=50 position:=50
+        - waitForRos; roslaunch multirotor_transformations rc_to_joy.launch
   - control:
       layout: tiled
       panes:
@@ -21,7 +21,7 @@ windows:
   - tf:
       layout: tiled
       panes: 
-        - waitForRos; waitForOdometry; roslaunch landing_platform world_to_base_link.launch
+        - waitForRos; waitForOdometry; roslaunch landing_platform world_to_base_link.launch        
   - realsense_camera:
       layout: tiled
       panes:
@@ -47,6 +47,6 @@ windows:
  - bagger:
       layout: tiled
       panes:
-        - history -s "roslaunch landing_platform landing_platform_bagger_mpc_tracker.launch
+        - history -s "roslaunch landing_platform landing_platform_bagger.launch
 
         
