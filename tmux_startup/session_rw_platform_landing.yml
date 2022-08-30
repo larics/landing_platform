@@ -21,7 +21,7 @@ windows:
   - tf:
       layout: tiled
       panes: 
-        - waitForRos; waitForOdometry; roslaunch landing_platform world_to_base_link.launch        
+        - waitForRos; waitForOdometry; roslaunch landing_platform tf_static_map_to_camera_link.launch        
   - realsense_camera:
       layout: tiled
       panes:
@@ -29,9 +29,9 @@ windows:
   - ar_tag_detection:
       layout: tiled
       panes:
-        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=world marker_size:=100.0
+        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=18.0
         - waitForRos; rostopic echo /outer_tag/ar_pose_marker 
-        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=world marker_size:=8.33
+        - waitForRos; waitForOdometry; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=1.5
         - waitForRos; rostopic echo /inner_tag/ar_pose_marker
   - landing_algorithm:
       layout: tiled
