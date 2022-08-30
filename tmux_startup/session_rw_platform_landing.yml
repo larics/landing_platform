@@ -44,7 +44,7 @@ windows:
       layout: tiled
       panes:
         - waitForRos; rosrun rviz rviz -d $(rospack find landing_platform)/rviz/detection_sim.rviz
- - bagger:
+  - bagger:
       layout: tiled
       panes:
         - history -s "roslaunch landing_platform landing_platform_bagger.launch
