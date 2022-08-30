@@ -2,7 +2,6 @@
 <node pkg="tf" type="static_transform_publisher" name="camera_link_broadcaster" args="0 0 -0.2 0 1.570796 0 base_link camera_link 100" />
 <launch>
 
-
   <arg name="namespace" default="$(env UAV_NAMESPACE)"/>
   <arg name="parent_frame"          default="map"/>
   <arg name="child_frame"           default="base_link"/>
