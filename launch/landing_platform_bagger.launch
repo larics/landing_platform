@@ -2,7 +2,7 @@
   <arg name="filename" default="experiment"/>
 
   <node name="landing_platform_bagger" pkg="landing_platform" type="bagger.sh" output="screen"
-    args="root/bags/$(arg filename) /tf /tf_static 
+    args="/root/bags/$(arg filename) /tf /tf_static 
           /$(env UAV_NAMESPACE)/mavros/battery                                                                                                                                                                                                                                                                                                               
           /$(env UAV_NAMESPACE)/mavros/global_position/compass_hdg                                                                                                                                                                            
           /$(env UAV_NAMESPACE)/mavros/global_position/global                                                                                                                                                                                 
@@ -63,7 +63,6 @@
           /$(env UAV_NAMESPACE)/mavros/timesync_status
           /$(env UAV_NAMESPACE)/mavros/vfr_hud                                 
           /$(env UAV_NAMESPACE)/mavros/wind_estimation
-          /$(env UAV_NAMESPACE)/joint_trajectory
           /$(env UAV_NAMESPACE)/carrot/pose /$(env UAV_NAMESPACE)/carrot/trajectory /$(env UAV_NAMESPACE)/carrot/status /$(env UAV_NAMESPACE)/position_hold/trajectory
           /$(env UAV_NAMESPACE)/tracker/input_pose /$(env UAV_NAMESPACE)/tracker/status
           /$(env UAV_NAMESPACE)/debug/processed_trajectory
