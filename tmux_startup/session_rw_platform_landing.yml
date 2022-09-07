@@ -9,11 +9,15 @@ windows:
         - roscore
         - waitForRos; roslaunch uav_ros_general apm2.launch fcu_url:=/dev/ttyUSB_px4:921600
         - waitForRos; waitForMavros; sleep 10; roslaunch uav_ros_general mavsys.launch raw_sensors:=50 rc_channels:=50 extra1:=50 position:=50
-        - waitForRos; roslaunch multirotor_transformations rc_to_joy.launch
+        - waitForRos; roslaunch uav_ros_general rc_to_joy.launch
   - control:
       layout: tiled
       panes:
-        - waitForRos; waitForGlobal; roslaunch uav_ros_control pid_carrot.launch manual_takeoff:=true
+        - waitForRos; waitForGlobal; roslaunch uav_ros_control pid_carrot.launch 
+          manual_takeoff:=false
+          carrot_land:=true
+          land_disarm_enabled:=true
+        - history -s "# roslaunch uav_ros_control uav_manager.launch odometry:=mavros/global_position/local"
   - mpc_tracker:
       layout: tiled
       panes:
@@ -29,9 +33,9 @@ windows:
   - ar_tag_detection:
       layout: tiled
       panes:
-        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=18.0
+        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=72.0
         - waitForRos; rostopic echo /outer_tag/ar_pose_marker 
-        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=1.5
+        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=6
         - waitForRos; rostopic echo /inner_tag/ar_pose_marker
   - landing_algorithm:
       layout: tiled
