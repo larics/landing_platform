@@ -98,7 +98,7 @@ void LandingPlatform::innerTagDetectorCallback(const ar_track_alvar_msgs::AlvarM
     geometry_msgs::Point tagPosition;
     geometry_msgs::Quaternion tagOrientation;
     std::vector<ar_track_alvar_msgs::AlvarMarker> tagList;
-    if ((_currentOdomPosition.z <= _innerTagAltMax) && (_currentOdomPosition.z >= _innerTagAltMin))
+    if ((_currentOdomPosition.z <= _innerTagAltMax))// && (_currentOdomPosition.z >= _innerTagAltMin))
     {
         tagList = innerTagMsg->markers;
         for (auto& tag : tagList)
@@ -219,8 +219,6 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
 		pose.header.stamp = ros::Time::now();
         pose.pose.position.x = _innerTagPositionX;
 		pose.pose.position.y = _innerTagPositionY;
-		// pose.pose.position.x = _innerTagPositionY;      //Gazebo hack
-		// pose.pose.position.y = -_innerTagPositionX;     //Gazebo hack
 		pose.pose.position.z = _innerTagAltMin;
 		pose.pose.orientation.x = _innerTagOrientationX;
 		pose.pose.orientation.y = _innerTagOrientationY;

@@ -10,7 +10,6 @@ windows:
         - export SITL_RITW_TERMINAL="tmux new-window -n:ardupilot1"; waitForRos; 
           roslaunch ardupilot_gazebo sim_vehicle.launch 
           enable_console:=false
-          additional_arguments:="--no-rebuild"
         - waitForRos; waitForSimulation; roslaunch ardupilot_gazebo mavros.launch
   - gazebo:
       layout: tiled
