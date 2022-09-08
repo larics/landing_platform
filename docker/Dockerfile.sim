@@ -57,7 +57,8 @@ ARG ROS_MASTER_URI=http://localhost.local:11311
 ARG ROS_IP=localhost.local
 
 WORKDIR $HOME/$CATKIN_WORKSPACE/src
-RUN --mount=type=ssh git  clone git@github.com:larics/larics_gazebo_worlds.git && cd uav_ros_simulation && gitman update
+RUN --mount=type=ssh git  clone git@github.com:larics/larics_gazebo_worlds.git && \
+    cd uav_ros_simulation/ros_packages/uav_ros_stack && gitman update
 RUN catkin build
 
 WORKDIR $HOME/$CATKIN_WORKSPACE/src/landing_platform

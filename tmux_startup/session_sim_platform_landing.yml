@@ -23,11 +23,12 @@ windows:
         # - rosrun ardupilot_gazebo automatic_takeoff.sh
         - waitForRos; roslaunch uav_ros_control pid_carrot.launch 
           manual_takeoff:=false
+          carrot_land:=true
+          land_disarm_enabled:=true
           control_type:=pid_cascade_node_yawrate
+        - waitForRos; roslaunch uav_ros_control uav_manager.launch odometry:=mavros/global_position/local
           # default_params:=custom_config/position_control_thrust.yaml
-        - |
-          waitForRos
-          rosrun ardupilot_gazebo automatic_takeoff.sh
+        # - waitForRos; rosrun ardupilot_gazebo automatic_takeoff.sh
   - mpc_tracker:
       layout: tiled
       panes:

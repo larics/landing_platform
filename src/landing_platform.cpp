@@ -52,7 +52,7 @@ void LandingPlatform::outerTagDetectorCallback(const ar_track_alvar_msgs::AlvarM
     geometry_msgs::Quaternion tagOrientation;
     std::vector<ar_track_alvar_msgs::AlvarMarker> tagList;
     // ROS_INFO("outer_tag");
-    if ((_currentOdomPosition.z <= _outerTagAltMax) && (_currentOdomPosition.z >= _outerTagAltMin))
+    if ((_currentOdomPosition.z <= _innerTagPositionZ + _outerTagAltMax) && (_currentOdomPosition.z >= _innerTagPositionZ + _outerTagAltMin))
     {
         tagList = outerTagMsg->markers;
         for (auto& tag : tagList)
@@ -64,29 +64,42 @@ void LandingPlatform::outerTagDetectorCallback(const ar_track_alvar_msgs::AlvarM
                 _outerTagDetectionCounter++;
                 tagPosition = tag.pose.pose.position;
                 tagOrientation = tag.pose.pose.orientation;
-                _outerTagPosX.push_back(tagPosition.x);
-                _outerTagPosY.push_back(tagPosition.y);
-                _outerTagqX.push_back(tagOrientation.x);
-                _outerTagqY.push_back(tagOrientation.y);
-                _outerTagqZ.push_back(tagOrientation.z);
-                _outerTagqW.push_back(tagOrientation.w);
-                tagPosSum = std::accumulate(_outerTagPosX.begin(), _outerTagPosX.end(), 0.0);
-                // ROS_INFO("SumX: %.2f", tagPosSum);
-                _outerTagPositionX = tagPosSum/_outerTagDetectionCounter;
-                tagPosSum = std::accumulate(_outerTagPosY.begin(), _outerTagPosY.end(), 0.0);
-                // ROS_INFO("SumY: %.2f", tagPosSum);
-                _outerTagPositionY = tagPosSum/_outerTagDetectionCounter;
-                tagOriSum = std::accumulate(_outerTagqX.begin(), _outerTagqX.end(), 0.0);
-                _outerTagOrientationX = tagOriSum/_outerTagDetectionCounter;
-                tagOriSum = std::accumulate(_outerTagqY.begin(), _outerTagqY.end(), 0.0);
-                _outerTagOrientationY = tagOriSum/_outerTagDetectionCounter;
-                tagOriSum = std::accumulate(_outerTagqZ.begin(), _outerTagqZ.end(), 0.0);
-                _outerTagOrientationZ = tagOriSum/_outerTagDetectionCounter;
-                tagOriSum = std::accumulate(_outerTagqW.begin(), _outerTagqW.end(), 0.0);
-                _outerTagOrientationW = tagOriSum/_outerTagDetectionCounter;
+                // _outerTagPosX.push_back(tagPosition.x);
+                // _outerTagPosY.push_back(tagPosition.y);
+                // _outerTagqX.push_back(tagOrientation.x);
+                // _outerTagqY.push_back(tagOrientation.y);
+                // _outerTagqZ.push_back(tagOrientation.z);
+                // _outerTagqW.push_back(tagOrientation.w);
+                // tagPosSum = std::accumulate(_outerTagPosX.begin(), _outerTagPosX.end(), 0.0);
+                // _outerTagPositionX = tagPosSum/_outerTagDetectionCounter;
+                // tagPosSum = std::accumulate(_outerTagPosY.begin(), _outerTagPosY.end(), 0.0);
+                // _outerTagPositionY = tagPosSum/_outerTagDetectionCounter;
+                // tagPosSum = std::accumulate(_outerTagPosZ.begin(), _outerTagPosZ.end(), 0.0);
+                // _outerTagPositionZ = tagPosSum/_outerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_outerTagqX.begin(), _outerTagqX.end(), 0.0);
+                // _outerTagOrientationX = tagOriSum/_outerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_outerTagqY.begin(), _outerTagqY.end(), 0.0);
+                // _outerTagOrientationY = tagOriSum/_outerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_outerTagqZ.begin(), _outerTagqZ.end(), 0.0);
+                // _outerTagOrientationZ = tagOriSum/_outerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_outerTagqW.begin(), _outerTagqW.end(), 0.0);
+                // _outerTagOrientationW = tagOriSum/_outerTagDetectionCounter;
+
+                _medianOuterTagPosX.addSample(tagPosition.x);
+                _outerTagPositionX = _medianOuterTagPosX.getMedian();
+                _medianOuterTagPosY.addSample(tagPosition.y);
+                _outerTagPositionY = _medianOuterTagPosY.getMedian();
+                _medianOuterTagPosZ.addSample(tagPosition.z);
+                _outerTagPositionZ = _medianOuterTagPosZ.getMedian();
+                _medianOuterTagqX.addSample(tagOrientation.x);
+                _outerTagOrientationX = _medianOuterTagqX.getMedian();
+                _medianOuterTagqY.addSample(tagOrientation.y);
+                _outerTagOrientationY = _medianOuterTagqY.getMedian();
+                _medianOuterTagqZ.addSample(tagOrientation.z);
+                _outerTagOrientationZ = _medianOuterTagqZ.getMedian();
+                _medianOuterTagqW.addSample(tagOrientation.w);
+                _outerTagOrientationW = _medianOuterTagqW.getMedian();
             }
-            // ROS_INFO("_outerTagDetectionCounter: %d", _outerTagDetectionCounter);
-            // ROS_INFO("_outerTagPosition: X:  %.2f, Y:  %.2f", _outerTagPositionX, _outerTagPositionY);           
         }
     }
 
@@ -98,7 +111,7 @@ void LandingPlatform::innerTagDetectorCallback(const ar_track_alvar_msgs::AlvarM
     geometry_msgs::Point tagPosition;
     geometry_msgs::Quaternion tagOrientation;
     std::vector<ar_track_alvar_msgs::AlvarMarker> tagList;
-    if ((_currentOdomPosition.z <= _innerTagAltMax))// && (_currentOdomPosition.z >= _innerTagAltMin))
+    if ((_currentOdomPosition.z <= _innerTagPositionZ + _innerTagAltMax) && (_currentOdomPosition.z >= _innerTagPositionZ + _innerTagAltMin))
     {
         tagList = innerTagMsg->markers;
         for (auto& tag : tagList)
@@ -110,30 +123,44 @@ void LandingPlatform::innerTagDetectorCallback(const ar_track_alvar_msgs::AlvarM
                 _innerTagDetectionCounter++;
                 tagPosition = tag.pose.pose.position;
                 tagOrientation = tag.pose.pose.orientation;
-                _innerTagPosX.push_back(tagPosition.x);
-                _innerTagPosY.push_back(tagPosition.y);
-                _innerTagqX.push_back(tagOrientation.x);
-                _innerTagqY.push_back(tagOrientation.y);
-                _innerTagqZ.push_back(tagOrientation.z);
-                _innerTagqW.push_back(tagOrientation.w);
-                tagPosSum = std::accumulate(_innerTagPosX.begin(), _innerTagPosX.end(), 0.0);
-                // ROS_INFO("SumX: %.2f", tagPosSum);
-                _innerTagPositionX = tagPosSum/_innerTagDetectionCounter;
-                tagPosSum = std::accumulate(_innerTagPosY.begin(), _innerTagPosY.end(), 0.0);
-                // ROS_INFO("SumY: %.2f", tagPosSum);
-                _innerTagPositionY = tagPosSum/_innerTagDetectionCounter;
-                tagOriSum = std::accumulate(_innerTagqX.begin(), _innerTagqX.end(), 0.0);
-                _innerTagOrientationX = tagOriSum/_innerTagDetectionCounter;
-                tagOriSum = std::accumulate(_innerTagqY.begin(), _innerTagqY.end(), 0.0);
-                _innerTagOrientationY = tagOriSum/_innerTagDetectionCounter;
-                tagOriSum = std::accumulate(_innerTagqZ.begin(), _innerTagqZ.end(), 0.0);
-                _innerTagOrientationZ = tagOriSum/_innerTagDetectionCounter;
-                tagOriSum = std::accumulate(_innerTagqW.begin(), _innerTagqW.end(), 0.0);
-                _innerTagOrientationW = tagOriSum/_innerTagDetectionCounter;
+                // _innerTagPosX.push_back(tagPosition.x);
+                // _innerTagPosY.push_back(tagPosition.y);
+                // _innerTagqX.push_back(tagOrientation.x);
+                // _innerTagqY.push_back(tagOrientation.y);
+                // _innerTagqZ.push_back(tagOrientation.z);
+                // _innerTagqW.push_back(tagOrientation.w);
+                // tagPosSum = std::accumulate(_innerTagPosX.begin(), _innerTagPosX.end(), 0.0);
+                // _innerTagPositionX = tagPosSum/_innerTagDetectionCounter;
+                // tagPosSum = std::accumulate(_innerTagPosY.begin(), _innerTagPosY.end(), 0.0);
+                // _innerTagPositionY = tagPosSum/_innerTagDetectionCounter;
+                // tagPosSum = std::accumulate(_innerTagPosZ.begin(), _innerTagPosZ.end(), 0.0);
+                // _innerTagPositionZ = tagPosSum/_innerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_innerTagqX.begin(), _innerTagqX.end(), 0.0);
+                // _innerTagOrientationX = tagOriSum/_innerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_innerTagqY.begin(), _innerTagqY.end(), 0.0);
+                // _innerTagOrientationY = tagOriSum/_innerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_innerTagqZ.begin(), _innerTagqZ.end(), 0.0);
+                // _innerTagOrientationZ = tagOriSum/_innerTagDetectionCounter;
+                // tagOriSum = std::accumulate(_innerTagqW.begin(), _innerTagqW.end(), 0.0);
+                // _innerTagOrientationW = tagOriSum/_innerTagDetectionCounter;
+            
+                _medianInnerTagPosX.addSample(tagPosition.x);
+                _innerTagPositionX = _medianInnerTagPosX.getMedian();
+                _medianInnerTagPosY.addSample(tagPosition.y);
+                _innerTagPositionY = _medianInnerTagPosY.getMedian();
+                _medianInnerTagPosZ.addSample(tagPosition.z);
+                _innerTagPositionZ = _medianInnerTagPosZ.getMedian();
+                _medianInnerTagqX.addSample(tagOrientation.x);
+                _innerTagOrientationX = _medianInnerTagqX.getMedian();
+                _medianInnerTagqY.addSample(tagOrientation.y);
+                _innerTagOrientationY = _medianInnerTagqY.getMedian();
+                _medianInnerTagqZ.addSample(tagOrientation.z);
+                _innerTagOrientationZ = _medianInnerTagqZ.getMedian();
+                _medianInnerTagqW.addSample(tagOrientation.w);
+                _innerTagOrientationW = _medianInnerTagqW.getMedian();
+            
             }
-            // ROS_INFO("_innerTagDetectionCounter: %d", _innerTagDetectionCounter);
-            // ROS_INFO("_innerTagPosition: X:  %.2f, Y:  %.2f", _innerTagPositionX, _innerTagPositionY);
-        }
+       }
     }
 
 }
@@ -142,17 +169,17 @@ void LandingPlatform::doLanding()
 {
     if (_landingPlatformToggled)
     {
-        ROS_INFO("_outerTagPosition: X:  %.2f, Y:  %.2f", _outerTagPositionX, _outerTagPositionY);           
-        ROS_INFO("_innerTagPosition: X:  %.2f, Y:  %.2f", _innerTagPositionX, _innerTagPositionY);
+        ROS_INFO("_outerTagPosition: X:  %.2f, Y:  %.2f, Z:  %.2f", _outerTagPositionX, _outerTagPositionY, _outerTagPositionZ);           
+        ROS_INFO("_innerTagPosition: X:  %.2f, Y:  %.2f, Z:  %.2f", _innerTagPositionX, _innerTagPositionY, _innerTagPositionZ);
         if ((_innerTagDetectionCounter > _innerTagValidDetections) 
-            && (_currentOdomPosition.z >= _innerTagAltMin)
-            && (_currentOdomPosition.z <= _innerTagAltMax))
+            && (_currentOdomPosition.z >= _innerTagPositionZ + _innerTagAltMin + 0.5)
+            && (_currentOdomPosition.z <= _innerTagPositionZ + _innerTagAltMax))
         {
             sendMpcTrackerPose(_innerTagId);
         }
         else if (_outerTagDetectionCounter > _outerTagValidDetections 
-            && (_currentOdomPosition.z >= _outerTagAltMin)
-            && (_currentOdomPosition.z <= _outerTagAltMax))
+            && (_currentOdomPosition.z >= _outerTagPositionZ + _outerTagAltMin + 0.5)
+            && (_currentOdomPosition.z <= _outerTagPositionZ + _outerTagAltMax))
         {
             sendMpcTrackerPose(_outerTagId);
         }
@@ -172,7 +199,7 @@ void LandingPlatform::initializeParameters(ros::NodeHandle& nh)
 
     _outerTagAltMax = 12.0;
     _outerTagAltMin = 2.0;
-    _innerTagAltMax = 3.0;
+    _innerTagAltMax = 4.0;
     _innerTagAltMin = 1.0;
 
     _outerTagDetectionCounter = 0;
@@ -203,9 +230,7 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
 		pose.header.stamp = ros::Time::now();
 		pose.pose.position.x = _outerTagPositionX;
 		pose.pose.position.y = _outerTagPositionY;
-        // pose.pose.position.x = _outerTagPositionY;      //Gazebo hack
-		// pose.pose.position.y = -_outerTagPositionX;     //Gazebo hack
-		pose.pose.position.z = _outerTagAltMin;
+		pose.pose.position.z = _outerTagPositionZ + _outerTagAltMin;
 		pose.pose.orientation.x = _outerTagOrientationX;
 		pose.pose.orientation.y = _outerTagOrientationY;
 		pose.pose.orientation.z = _outerTagOrientationZ;
@@ -219,7 +244,7 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
 		pose.header.stamp = ros::Time::now();
         pose.pose.position.x = _innerTagPositionX;
 		pose.pose.position.y = _innerTagPositionY;
-		pose.pose.position.z = _innerTagAltMin;
+		pose.pose.position.z = _innerTagPositionZ + _innerTagAltMin;
 		pose.pose.orientation.x = _innerTagOrientationX;
 		pose.pose.orientation.y = _innerTagOrientationY;
 		pose.pose.orientation.z = _innerTagOrientationZ;

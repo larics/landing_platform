@@ -51,6 +51,6 @@ windows:
   - bagger:
       layout: tiled
       panes:
-        - history -s "roslaunch landing_platform landing_platform_bagger.launch
+        - history -s "roslaunch landing_platform landing_platform_bagger.launch"
 
         
