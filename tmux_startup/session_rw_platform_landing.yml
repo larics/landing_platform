@@ -18,6 +18,8 @@ windows:
           carrot_land:=true
           land_disarm_enabled:=true
         - history -s "# roslaunch uav_ros_control uav_manager.launch odometry:=mavros/global_position/local"
+        - history -s "rosservice call /$UAV_NAMESPACE/tracker/enable true"
+        - history -s "rosservice call /$UAV_NAMESPACE/position_hold"
   - mpc_tracker:
       layout: tiled
       panes:
