@@ -23,7 +23,7 @@ windows:
   - mpc_tracker:
       layout: tiled
       panes:
-        - waitForRos; waitForOdometry; roslaunch uav_ros_tracker mpc_tracker.launch tracker_config:=custom_config/mpc_tracker_config.yaml
+        - waitForRos; waitForOdometry; roslaunch uav_ros_tracker mpc_tracker.launch tracker_config:=custom_config/mpc_tracker_config_rw.yaml
   - tf:
       layout: tiled
       panes: 
@@ -43,7 +43,7 @@ windows:
       layout: tiled
       panes: 
         # - waitForRos; waitForOdometry; roslaunch potential_fields trajectory_go_to.launch
-        - waitForRos; waitForOdometry; roslaunch landing_platform landing_platform.launch
+        - waitForRos; waitForOdometry; roslaunch landing_platform landing_platform.launch robot_frame_id:=base_link global_frame_id:=map
         - "#waitForRos; waitForOdometry; rosservice call /$UAV_NAMESPACE/landing_platform/toggle \"data: true\""
         # - "#waitForRos; waitForOdometry; rostopic pub /$UAV_NAMESPACE/go_to/reference geometry_msgs/Pose '{position: {x: 0.0, y: 0.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}'"
   - rviz:
