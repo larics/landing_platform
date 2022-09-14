@@ -32,6 +32,7 @@
 
 #include <tf2/convert.h>
 #include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Transform.h>
@@ -114,15 +115,22 @@ class LandingPlatform
         std::vector<double> _outerTagqX, _outerTagqY, _outerTagqZ, _outerTagqW, _innerTagqX, _innerTagqY, _innerTagqZ, _innerTagqW;
         double _outerTagOrientationX, _outerTagOrientationY, _outerTagOrientationZ, _outerTagOrientationW, _innerTagOrientationX, _innerTagOrientationY, _innerTagOrientationZ, _innerTagOrientationW;
 
+        geometry_msgs::PointStamped _outerTagPositionLocal, _innerTagPositionLocal;
+
         nonlinear_filters::MedianFilter<double, 101> _medianOuterTagPosX, _medianOuterTagPosY, _medianOuterTagPosZ;
         nonlinear_filters::MedianFilter<double, 101> _medianOuterTagqX, _medianOuterTagqY, _medianOuterTagqZ, _medianOuterTagqW;
         nonlinear_filters::MedianFilter<double, 101> _medianInnerTagPosX, _medianInnerTagPosY, _medianInnerTagPosZ;
         nonlinear_filters::MedianFilter<double, 101> _medianInnerTagqX, _medianInnerTagqY, _medianInnerTagqZ, _medianInnerTagqW;
-
         
         geometry_msgs::Point _currentOdomPosition;
         double _qx, _qy, _qz, _qw;
         double _currentOdomImuYaw;
+
+        tf::TransformListener listener;
+
+        double _altitudeStep;
+        double _maxHorizontalError;
+        double _Kz;
         
 
         /** Define all the services */
