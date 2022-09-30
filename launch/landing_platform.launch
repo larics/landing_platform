@@ -2,24 +2,42 @@
 
   <arg name="namespace" default="$(env UAV_NAMESPACE)"/>
   <arg name="odometry" default="mavros/global_position/local"/>
+  <arg name="mpc_tracker_pose" default="tracker/input_pose"/>
 
+  <!-- Detection and landing arguments -->
   <arg name ="rate" default = "30"/>
   <arg name="global_frame_id" default="/world"/>
   <arg name="robot_frame_id" default="/$(arg namespace)/base_link"/>
-
-  <arg name="mpc_tracker_pose" default="tracker/input_pose"/>
-  <!-- arg name="mpc_tracker_trajectory" default="tracker/input_trajectory"/ -->
+  <arg name ="outer_tag_id" default = "63"/>
+  <arg name ="inner_tag_id" default = "0"/>
+  <arg name ="outer_tag_max_alt" default = "12.0"/>
+  <arg name ="outer_tag_min_alt" default = "2.0"/>
+  <arg name ="inner_tag_max_alt" default = "4.0"/>
+  <arg name ="inner_tag_min_alt" default = "1.0"/>
+  <arg name ="outer_tag_valid_detection" default = "120"/>
+  <arg name ="inner_tag_valid_detection" default = "120"/>
+  <arg name ="altitude_step" default = "0.01"/>
 
 <group ns="$(arg namespace)">
   <node name="landing_platform_node" pkg="landing_platform" type="landing_platform_node" output="screen">
     <param name ="rate" value = "$(arg rate)"/>
+    
     <param name="global_frame_id" value="$(arg global_frame_id)"/>
     <param name="robot_frame_id" value="$(arg robot_frame_id)"/>
+
+    <param name ="outer_tag_id" value = "$(arg outer_tag_id)"/>
+    <param name ="inner_tag_id" value = "$(arg inner_tag_id)"/>
+    <param name ="outer_tag_max_alt" value = "$(arg outer_tag_max_alt)"/>
+    <param name ="outer_tag_min_alt" value = "$(arg outer_tag_min_alt)"/>
+    <param name ="inner_tag_max_alt" value = "$(arg inner_tag_max_alt)"/>
+    <param name ="inner_tag_min_alt" value = "$(arg inner_tag_min_alt)"/>
+    <param name ="outer_tag_valid_detection" value = "$(arg outer_tag_valid_detection)"/>
+    <param name ="inner_tag_valid_detection" value = "$(arg inner_tag_valid_detection)"/>
+    <param name ="altitude_step" value = "$(arg altitude_step)"/>
     
     <remap from ="odometry" to = "$(arg odometry)"/>
-
     <remap from="mpc_tracker/pose" to="$(arg mpc_tracker_pose)"/>
-    <!-- remap from="mpc_tracker/trajectory" to="$(arg mpc_tracker_trajectory)"/ -->
+    
   </node>
 </group>
 </launch>

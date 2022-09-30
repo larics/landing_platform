@@ -12,9 +12,15 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   message_generation
   tf
+  dynamic_reconfigure
   uav_ros_lib
 )
+find_package(Boost)
 find_package(cmake_modules REQUIRED)
+
+generate_dynamic_reconfigure_options(
+    config/LandingPlatformParameters.cfg
+)
 
 add_message_files(
   FILES
@@ -36,7 +42,8 @@ target_link_libraries(landing_platform ${catkin_LIBRARIES})
 add_executable(landing_platform_node nodes/LandingPlatformNode.cpp)
 target_link_libraries(landing_platform_node
       ${catkin_LIBRARIES} landing_platform)
-
+add_dependencies(landing_platform_node ${catkin_EXPORTED_TARGETS}
+      ${PROJECT_NAME}_gencfg)
 add_executable(tf_node src/tf2_broadcaster.cpp)
 target_link_libraries(tf_node
     ${catkin_LIBRARIES}

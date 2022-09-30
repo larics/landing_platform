@@ -39,6 +39,9 @@
 
 #include <uav_ros_lib/nonlinear_filters.hpp>
 
+#include <dynamic_reconfigure/server.h>
+#include <landing_platform/LandingPlatformParametersConfig.h>
+
 
 using namespace std;
 
@@ -52,6 +55,26 @@ class LandingPlatform
         void doLanding();
 
         virtual void initializeParameters(ros::NodeHandle& nh);
+
+        /**
+         * Callback function used for setting various parameters.
+         */
+        void parametersCallback(
+                landing_platform::LandingPlatformParametersConfig& configMsg,
+                uint32_t level);
+        /**
+         * Set reconfigure parameters in the given config object.
+         */
+        void setReconfigureParameters(landing_platform::LandingPlatformParametersConfig& config);
+        
+        boost::recursive_mutex config_mutex;
+        // Initialize configure server
+        dynamic_reconfigure::Server<landing_platform::
+            LandingPlatformParametersConfig>confServer{config_mutex};
+        
+        // Initialize reconfigure callback
+        dynamic_reconfigure::Server<landing_platform::
+            LandingPlatformParametersConfig>::CallbackType paramCallback;
 
         void sendMpcTrackerPose(int tagId);
 
@@ -78,6 +101,11 @@ class LandingPlatform
         void odometryCallback(const nav_msgs::Odometry::ConstPtr& odometryMsg);
 
         /**
+         * Current Carrot reference data.
+         */
+        void referenceCallback(const geometry_msgs::PoseStamped::ConstPtr& referenceMsg);
+
+        /**
          * Alvar AR Tag detector subscribers
          */
 
@@ -93,7 +121,7 @@ class LandingPlatform
         bool _landingPlatformToggled;
         bool _startFlag;
 
-        ros::Subscriber _odometrySub, _outerTagSub, _innerTagSub;
+        ros::Subscriber _odometrySub, _referenceSub, _outerTagSub, _innerTagSub;
         ros::Publisher _trackerPosePub, _detectedTagsPub;
 
         int _outerTagId;
@@ -107,22 +135,26 @@ class LandingPlatform
         uint32_t _outerTagDetectionCounter;
         uint32_t _innerTagDetectionCounter;
 
-        uint32_t _outerTagValidDetections;
-        uint32_t _innerTagValidDetections;
+        int _outerTagValidDetections;
+        int _innerTagValidDetections;
         
-        std::vector<double> _outerTagPosX, _outerTagPosY, _outerTagPosZ, _innerTagPosX, _innerTagPosY, _innerTagPosZ;
-        double _outerTagPositionX, _outerTagPositionY, _outerTagPositionZ, _innerTagPositionX, _innerTagPositionY, _innerTagPositionZ;
-        std::vector<double> _outerTagqX, _outerTagqY, _outerTagqZ, _outerTagqW, _innerTagqX, _innerTagqY, _innerTagqZ, _innerTagqW;
-        double _outerTagOrientationX, _outerTagOrientationY, _outerTagOrientationZ, _outerTagOrientationW, _innerTagOrientationX, _innerTagOrientationY, _innerTagOrientationZ, _innerTagOrientationW;
-
-        geometry_msgs::PointStamped _outerTagPositionLocal, _innerTagPositionLocal;
-
-        nonlinear_filters::MedianFilter<double, 101> _medianOuterTagPosX, _medianOuterTagPosY, _medianOuterTagPosZ;
-        nonlinear_filters::MedianFilter<double, 101> _medianOuterTagqX, _medianOuterTagqY, _medianOuterTagqZ, _medianOuterTagqW;
-        nonlinear_filters::MedianFilter<double, 101> _medianInnerTagPosX, _medianInnerTagPosY, _medianInnerTagPosZ;
-        nonlinear_filters::MedianFilter<double, 101> _medianInnerTagqX, _medianInnerTagqY, _medianInnerTagqZ, _medianInnerTagqW;
+        geometry_msgs::Point _outerTagPositionLocal, _innerTagPositionLocal;
+        geometry_msgs::Quaternion _outerTagOrientationLocal, _innerTagOrientationLocal;
+        double _outerTagOrientationLocalYaw, _innerTagOrientationLocalYaw;
+        geometry_msgs::PointStamped _outerTagPositionGlobal, _outerTagPositionGlobalRaw, _innerTagPositionGlobal, _innerTagPositionGlobalRaw;
+                                    
+        nonlinear_filters::MedianFilter<double, 11> _medianOuterTagPosXGlobal, _medianOuterTagPosYGlobal, _medianOuterTagPosZGlobal, _medianOuterTagPosXLocal, _medianOuterTagPosYLocal, _medianOuterTagPosZLocal;
+        nonlinear_filters::MedianFilter<double, 11> _medianOuterTagqX, _medianOuterTagqY, _medianOuterTagqZ, _medianOuterTagqW;
+        nonlinear_filters::MedianFilter<double, 11> _medianInnerTagPosXGlobal, _medianInnerTagPosYGlobal, _medianInnerTagPosZGlobal, _medianInnerTagPosXLocal, _medianInnerTagPosYLocal, _medianInnerTagPosZLocal;
+        nonlinear_filters::MedianFilter<double, 11> _medianInnerTagqX, _medianInnerTagqY, _medianInnerTagqZ, _medianInnerTagqW;
         
         geometry_msgs::Point _currentOdomPosition;
+
+        geometry_msgs::Point _currentRefPositionFlight, _currentRefPosition;
+        double _currentOdomImuYawFlight, _currentRefYaw;
+        geometry_msgs::Quaternion _currentRefOrientation;
+        bool _firstRefMsgFlag;
+
         double _qx, _qy, _qz, _qw;
         double _currentOdomImuYaw;
 
@@ -132,6 +164,7 @@ class LandingPlatform
         double _maxHorizontalError;
         double _Kz;
         
+        uint32_t _mpcPoseSentFlag;
 
         /** Define all the services */
 		ros::ServiceServer _serviceLanding;

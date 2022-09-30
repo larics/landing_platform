@@ -24,13 +24,18 @@ void odometryCallback(const nav_msgs::Odometry::ConstPtr& msg)
   double qz = msg->pose.pose.orientation.z;
   double qw = msg->pose.pose.orientation.w;
 
-  double theta = atan2(2 * (qw * qz + qx * qy),
-     qw * qw + qx * qx - qy * qy - qz * qz);
-  q.setRPY(0, 0, theta);
-  transformStamped.transform.rotation.x = q.x();
-  transformStamped.transform.rotation.y = q.y();
-  transformStamped.transform.rotation.z = q.z();
-  transformStamped.transform.rotation.w = q.w();
+  // double theta = atan2(2 * (qw * qz + qx * qy),
+  //    qw * qw + qx * qx - qy * qy - qz * qz);
+  // q.setRPY(0, 0, theta);
+  // transformStamped.transform.rotation.x = q.x();
+  // transformStamped.transform.rotation.y = q.y();
+  // transformStamped.transform.rotation.z = q.z();
+  // transformStamped.transform.rotation.w = q.w();
+
+  transformStamped.transform.rotation.x = qx;
+  transformStamped.transform.rotation.y = qy;
+  transformStamped.transform.rotation.z = qz;
+  transformStamped.transform.rotation.w = qw;
 
   br.sendTransform(transformStamped);
 }
