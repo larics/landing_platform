@@ -211,14 +211,24 @@ void LandingPlatform::doLanding()
         ROS_INFO("_innerTagPosition: X:  %.2f, Y:  %.2f, Z:  %.2f", _innerTagPositionGlobal.point.x, _innerTagPositionGlobal.point.y, _innerTagPositionGlobal.point.z);
         ROS_INFO("_innerTagPosition: XLocal:  %.2f, YLocal:  %.2f, ZLocal:  %.2f", _innerTagPositionLocal.x, _innerTagPositionLocal.y, _innerTagPositionLocal.z);           
 
+        // if ((_innerTagDetectionCounter > _innerTagValidDetections) 
+        //     && (abs(_innerTagPositionLocal.z) > _innerTagAltMin)
+        //     && (abs(_innerTagPositionLocal.z) < _innerTagAltMax))
+        // {
+        //     sendMpcTrackerPose(_innerTagId);
+        // }
+        // else if (_outerTagDetectionCounter > _outerTagValidDetections 
+        //     && (abs(_outerTagPositionLocal.z) > _outerTagAltMin)
+        //     && (abs(_outerTagPositionLocal.z) < _outerTagAltMax))
+        // {
+        //     sendMpcTrackerPose(_outerTagId);
+        // }
         if ((_innerTagDetectionCounter > _innerTagValidDetections) 
-            && (abs(_innerTagPositionLocal.z) > _innerTagAltMin)
             && (abs(_innerTagPositionLocal.z) < _innerTagAltMax))
         {
             sendMpcTrackerPose(_innerTagId);
         }
         else if (_outerTagDetectionCounter > _outerTagValidDetections 
-            && (abs(_outerTagPositionLocal.z) > _outerTagAltMin)
             && (abs(_outerTagPositionLocal.z) < _outerTagAltMax))
         {
             sendMpcTrackerPose(_outerTagId);
@@ -324,10 +334,10 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
             // _currentRefPosition.z = max(_currentRefPosition.z - _altitudeStep, _outerTagAltMin);
             _currentRefPosition.z = _currentRefPosition.z - _altitudeStep;
         }
-        else
-        {
-            _currentRefPosition.z = _outerTagAltMin;
-        }
+        // else
+        // {
+        //     _currentRefPosition.z = _outerTagAltMin;
+        // }
         _mpcPoseSentFlag = 1;
     } 
     else if (tagId == _innerTagId)
@@ -345,10 +355,10 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
             _currentRefPosition.z = _currentRefPosition.z - _altitudeStep;
 
         }
-        else
-        {
-            _currentRefPosition.z = _innerTagAltMin;
-        }    
+        // else
+        // {
+        //     _currentRefPosition.z = _innerTagAltMin;
+        // }    
 
         _mpcPoseSentFlag = 2;
     }
