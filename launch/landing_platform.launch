@@ -5,7 +5,7 @@
   <arg name="mpc_tracker_pose" default="tracker/input_pose"/>
 
   <!-- Detection and landing arguments -->
-  <arg name ="rate" default = "30"/>
+  <arg name ="rate" default = "10"/>
   <arg name="global_frame_id" default="/world"/>
   <arg name="robot_frame_id" default="/$(arg namespace)/base_link"/>
   <arg name ="outer_tag_id" default = "63"/>
@@ -17,6 +17,7 @@
   <arg name ="outer_tag_valid_detection" default = "120"/>
   <arg name ="inner_tag_valid_detection" default = "120"/>
   <arg name ="altitude_step" default = "0.01"/>
+  <arg name ="k_z" default = "0.01"/>
 
 <group ns="$(arg namespace)">
   <node name="landing_platform_node" pkg="landing_platform" type="landing_platform_node" output="screen">
@@ -34,7 +35,8 @@
     <param name ="outer_tag_valid_detection" value = "$(arg outer_tag_valid_detection)"/>
     <param name ="inner_tag_valid_detection" value = "$(arg inner_tag_valid_detection)"/>
     <param name ="altitude_step" value = "$(arg altitude_step)"/>
-    
+    <param name ="k_z" value = "$(arg k_z)"/>
+
     <remap from ="odometry" to = "$(arg odometry)"/>
     <remap from="mpc_tracker/pose" to="$(arg mpc_tracker_pose)"/>
     

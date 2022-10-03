@@ -253,6 +253,7 @@ void LandingPlatform::parametersCallback(
     _outerTagValidDetections = configMsg.outer_tag_valid_detection;
     _innerTagValidDetections = configMsg.inner_tag_valid_detection;
     _altitudeStep = configMsg.altitude_step;
+    _Kz = configMsg.k_z;
 }
 
 void LandingPlatform::setReconfigureParameters(landing_platform::LandingPlatformParametersConfig& config)
@@ -267,6 +268,7 @@ void LandingPlatform::setReconfigureParameters(landing_platform::LandingPlatform
     config.outer_tag_valid_detection = _outerTagValidDetections;
     config.inner_tag_valid_detection = _innerTagValidDetections;
     config.altitude_step = _altitudeStep;
+    config.k_z = _Kz;
 }
 
 void LandingPlatform::initializeParameters(ros::NodeHandle& nh)
@@ -298,7 +300,8 @@ void LandingPlatform::initializeParameters(ros::NodeHandle& nh)
         nh.getParam("landing_platform_node/inner_tag_min_alt", _innerTagAltMin) &&
         nh.getParam("landing_platform_node/outer_tag_valid_detection", _outerTagValidDetections) &&
         nh.getParam("landing_platform_node/inner_tag_valid_detection", _innerTagValidDetections) &&
-        nh.getParam("landing_platform_node/altitude_step", _altitudeStep);
+        nh.getParam("landing_platform_node/altitude_step", _altitudeStep) &&
+        nh.getParam("landing_platform_node/k_z", _Kz);
 
     _outerTagDetectionCounter = 0;
     _innerTagDetectionCounter = 0;
@@ -328,12 +331,12 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
         _currentRefOrientation = ros_convert::calculate_quaternion(_currentRefYaw);
         _currentRefPosition.x = _outerTagPositionGlobal.point.x;
         _currentRefPosition.y = _outerTagPositionGlobal.point.y;
-        // _currentRefPosition.z = _currentRefPosition.z + _Kz*(_outerTagAltMin + _outerTagPositionLocal.z);
-        if (abs(_outerTagPositionLocal.z) > _outerTagAltMin)
-        {
-            // _currentRefPosition.z = max(_currentRefPosition.z - _altitudeStep, _outerTagAltMin);
-            _currentRefPosition.z = _currentRefPosition.z - _altitudeStep;
-        }
+        _currentRefPosition.z = _currentRefPosition.z + _Kz*(_outerTagAltMin + _outerTagPositionLocal.z);
+        // if (abs(_outerTagPositionLocal.z) > _outerTagAltMin)
+        // {
+        //     // _currentRefPosition.z = max(_currentRefPosition.z - _altitudeStep, _outerTagAltMin);
+        //     _currentRefPosition.z = _currentRefPosition.z - _altitudeStep;
+        // }
         // else
         // {
         //     _currentRefPosition.z = _outerTagAltMin;
@@ -348,18 +351,16 @@ void LandingPlatform::sendMpcTrackerPose(int tagId)
         _currentRefOrientation = ros_convert::calculate_quaternion(_currentRefYaw);    
         _currentRefPosition.x = _innerTagPositionGlobal.point.x;
         _currentRefPosition.y = _innerTagPositionGlobal.point.y;
-        // _currentRefPosition.z = _currentRefPosition.z + _Kz*(_innerTagAltMin + _innerTagPositionLocal.z);
-        if (abs(_innerTagPositionLocal.z) > _innerTagAltMin)
-        {
-            // _currentRefPosition.z = max(_currentRefPosition.z - _altitudeStep, _innerTagAltMin);
-            _currentRefPosition.z = _currentRefPosition.z - _altitudeStep;
-
-        }
+        _currentRefPosition.z = _currentRefPosition.z + _Kz*(_innerTagAltMin + _innerTagPositionLocal.z);
+        // if (abs(_innerTagPositionLocal.z) > _innerTagAltMin)
+        // {
+        //     // _currentRefPosition.z = max(_currentRefPosition.z - _altitudeStep, _innerTagAltMin);
+        //     _currentRefPosition.z = _currentRefPosition.z - _altitudeStep;
+        // }
         // else
         // {
         //     _currentRefPosition.z = _innerTagAltMin;
         // }    
-
         _mpcPoseSentFlag = 2;
     }
     geometry_msgs::PoseStamped pose;
