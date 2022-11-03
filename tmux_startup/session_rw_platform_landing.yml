@@ -14,9 +14,9 @@ windows:
       layout: tiled
       panes:
         - waitForRos; waitForGlobal; roslaunch uav_ros_control pid_carrot.launch 
-          manual_takeoff:=false
+          manual_takeoff:=true
           carrot_land:=true
-          land_disarm_enabled:=true
+          carrot_frame_id:=map
         - history -s "# roslaunch uav_ros_control uav_manager.launch odometry:=mavros/global_position/local"
         - history -s "rosservice call /$UAV_NAMESPACE/tracker/enable true"
         - history -s "rosservice call /$UAV_NAMESPACE/position_hold"
@@ -35,9 +35,9 @@ windows:
   - ar_tag_detection:
       layout: tiled
       panes:
-        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=72.0
+        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=outer_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=base_link marker_size:=72.0
         - waitForRos; rostopic echo /outer_tag/ar_pose_marker 
-        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=map marker_size:=6
+        - waitForRos; waitForOdometry; sleep 10; roslaunch landing_platform ar_tag_detection.launch namespace:=inner_tag cam_image_topic:=/camera/color/image_raw cam_info_topic:=/camera/color/camera_info output_frame:=base_link marker_size:=6
         - waitForRos; rostopic echo /inner_tag/ar_pose_marker
   - landing_algorithm:
       layout: tiled
@@ -54,5 +54,6 @@ windows:
       layout: tiled
       panes:
         - history -s "roslaunch landing_platform landing_platform_bagger.launch"
+        - history -s "rosbag record -a -x \"(.*)camera(.*)\" -o /root/bags/landing"
 
         
